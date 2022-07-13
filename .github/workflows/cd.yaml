@@ -16,6 +16,7 @@ jobs:
    environment: ${{ needs.build.outputs.env_name }}
    env:
      AWS_DEFAULT_REGION: us-east-1
+     SUPER_SECRET: ${{ secrets.AWS_ACCOUNT_DEV }}
    steps:
      - name: Checkout source php code
        uses: actions/checkout@v2
@@ -39,7 +40,7 @@ jobs:
        if: ${{ steps.branch_check.outputs.env_name }} == "prod" || ${{ steps.branch_check.outputs.env_name }} == "develop" || ${{ steps.branch_check.outputs.env_name }} == "qa"
        run: |
         echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}"
-     
+        echo "$SUPER_SECRET"
    #- name: push to S3
    #  run: aws s3 cp deploy-${{ github.sha }}.zip s3://${{env.AWS_BUCKET_NAME}}/ --profile develop
 
