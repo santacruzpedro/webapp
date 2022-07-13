@@ -29,7 +29,7 @@ jobs:
 
     ## Crear el ZIP file
      - name: Use variable setup in previous step
-        run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
+       run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
      #run: tar czf deploy.tar.gz * --exclude=./deploy.tar.gz
 
    #- name: push to S3
