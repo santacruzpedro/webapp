@@ -1,0 +1,33 @@
+name: Example pipeline
+on:
+ push:
+   branches: [ master ]
+ pull_request:
+   branches: [ master ]
+jobs:
+ deployments:
+   runs-on: ubuntu
+   environment: develop
+   steps:
+   - name: Checkout source php code
+     uses: actions/checkout@v2
+     #- run: echo " The ${{ github.repository }} repository has been cloned to the runner."
+     #- run: echo " The workflow is now ready to test your code on the runner."
+
+    ## Need to install zip
+   - name: Instalar zip package
+     run: echo "test"
+
+    ## Crear el ZIP file
+   - name: Generate deployment package
+     run: echo ${{ secrets.AWS_ACCOUNT }}
+     #run: tar czf deploy.tar.gz * --exclude=./deploy.tar.gz
+
+   #- name: push to S3
+   #  run: aws s3 cp deploy-${{ github.sha }}.zip s3://${{env.AWS_BUCKET_NAME}}/ --profile develop
+
+   #- name: Create new ElasticBeanstalk Application Version
+     #run: aws elasticbeanstalk create-application-version --application-name ${{envAPPLICATION_NAME}} --source-bundle S3Bucket=${{env.AWS_BUCKET_NAME}},S3Key=deploy-${{ github.sha }}.zip --version-label v-${{ github.sha }} --description testv1 --profile develop --region ${{env.AWS_DEFAULT_REGION}}
+    
+   #- name: Deploy new App Version
+     #run: aws elasticbeanstalk update-environment --application-name ${{envAPPLICATION_NAME}} --environment-name tutorials-env --version-label v-${{ github.sha }} --profile develop --region ${{env.AWS_DEFAULT_REGION}}
