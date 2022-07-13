@@ -9,7 +9,7 @@ on:
      - master
      - develop
 jobs:
- deployments:
+ deploy:
    runs-on: ubuntu-latest
    environment: ${{ needs.build.outputs.env_name }}
    steps:
@@ -22,15 +22,24 @@ jobs:
          echo "Running on branch ${{ github.ref }}"
          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
            echo "::set-output name=env_name::prod"
+           echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_PROD}}"
          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
            echo "::set-output name=env_name::develop"
+           echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_DEV}}"
          else
            echo "::set-output name=env_name::qa"
+           echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_QA}}"
          fi      
-
     ## Crear el ZIP file
-     - name: Use variable setup in previous step
-       run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
+     - name: Push to s3
+       run: |
+         if ["${{ steps.branch_check.outputs.env_name }}" = "prod"]; then
+          echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}"
+         elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+          echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}"
+         else
+          echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}" 
+
      #run: tar czf deploy.tar.gz * --exclude=./deploy.tar.gz
 
    #- name: push to S3
