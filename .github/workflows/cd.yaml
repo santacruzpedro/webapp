@@ -24,13 +24,13 @@ jobs:
          echo "Running on branch ${{ github.ref }}"
          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
            echo "::set-output name=env_name::prod"
-           echo "::set-output name=env_account::"${{ secrets.AWS_ACCOUNT_PROD}}
+           echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_PROD}}"
          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
            echo "::set-output name=env_name::develop"
-           echo "::set-output name=env_account::"${{ secrets.AWS_ACCOUNT_DEV}}
+           echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_DEV}}"
          elif [ "${{ github.ref }}" = "refs/heads/qa" ]; then
            echo "::set-output name=env_name::qa"
-           echo "::set-output name=env_account::"${{ secrets.AWS_ACCOUNT_QA}}
+           echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_QA}}"
          fi      
     ## Crear el ZIP file
      - name: Push to s3
