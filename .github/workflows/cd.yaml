@@ -10,7 +10,7 @@ on:
      - develop
 jobs:
  deployments:
-   runs-on: ubuntu
+   runs-on: ubuntu-latest
    environment: develop
    steps:
      - name: Checkout source php code
