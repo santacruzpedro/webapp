@@ -18,14 +18,14 @@ jobs:
     ## Need to install zip
      - name: Instalar zip package
        run: |
-       echo "Running on branch ${{ github.ref }}"
-       if [ "${{ github.ref }}" = "refs/heads/master" ]; then
-         echo "::set-output name=env_name::prod"
-       elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
-         echo "::set-output name=env_name::develop"
-       else
-         echo "::set-output name=env_name::qa"
-       fi      
+         echo "Running on branch ${{ github.ref }}"
+         if [ "${{ github.ref }}" = "refs/heads/master" ]; then
+           echo "::set-output name=env_name::prod"
+         elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+           echo "::set-output name=env_name::develop"
+         else
+           echo "::set-output name=env_name::qa"
+         fi      
 
     ## Crear el ZIP file
      - name: Generate deployment package
