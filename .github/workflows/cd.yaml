@@ -15,10 +15,9 @@ jobs:
    steps:
      - name: Checkout source php code
        uses: actions/checkout@v2
-       run: ls
     ## Need to install zip
      - name: Instalar zip package
-       run: echo "test"
+       run: echo "test" && ls
 
     ## Crear el ZIP file
      - name: Generate deployment package
