@@ -39,8 +39,7 @@ jobs:
        if: ${{ steps.branch_check.outputs.env_name }} == "prod" || ${{ steps.branch_check.outputs.env_name }} == "develop" || ${{ steps.branch_check.outputs.env_name }} == "qa"
        run: |
         echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}"
-     #run: tar czf deploy.tar.gz * --exclude=./deploy.tar.gz
-
+     
    #- name: push to S3
    #  run: aws s3 cp deploy-${{ github.sha }}.zip s3://${{env.AWS_BUCKET_NAME}}/ --profile develop
 
