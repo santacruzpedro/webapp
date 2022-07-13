@@ -28,7 +28,7 @@ jobs:
          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
            echo "::set-output name=env_name::develop"
            echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_DEV}}"
-         else
+         elif [ "${{ github.ref }}" = "refs/heads/qa" ]; then
            echo "::set-output name=env_name::qa"
            echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_QA}}"
          fi      
