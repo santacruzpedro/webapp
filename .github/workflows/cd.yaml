@@ -20,7 +20,7 @@ jobs:
    steps:
      - name: Checkout source php code
        uses: actions/checkout@v2
-    ## Need to install zip
+    
      - name: Instalar zip package
        id: branch_check
        run: |
