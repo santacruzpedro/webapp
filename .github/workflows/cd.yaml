@@ -14,6 +14,8 @@ jobs:
  deploy:
    runs-on: ubuntu-latest
    environment: ${{ needs.build.outputs.env_name }}
+   env:
+     AWS_DEFAULT_REGION: us-east-1
    steps:
      - name: Checkout source php code
        uses: actions/checkout@v2
