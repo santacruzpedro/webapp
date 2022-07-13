@@ -1,4 +1,4 @@
-name: Example pipeline
+name: Campus Pipeline
 on:
  push:
    branches: 
@@ -12,15 +12,14 @@ on:
      - qa
 jobs:
  deploy:
-   runs-on: ubuntu-latest
-   environment: ${{ needs.build.outputs.env_name }}
+   runs-on: self-hosted
    env:
      AWS_DEFAULT_REGION: us-east-1
    steps:
      - name: Checkout source php code
        uses: actions/checkout@v2
     
-     - name: Instalar zip package
+     - name: Replace varibles
        id: branch_check
        run: |
          echo "Running on branch ${{ github.ref }}"
@@ -33,27 +32,30 @@ jobs:
          elif [ "${{ github.ref }}" = "refs/heads/qa" ]; then
            echo "::set-output name=env_name::qa"
            echo "::set-output name=env_account::${{ secrets.AWS_ACCOUNT_QA}}"
-         fi      
+         fi  
+    ## Profile in runner develop, prod and qa 
     ## Crear el ZIP file
-     #- name: Generate deployment package
-     #  run: zip -r deploy-${{ github.sha }}.zip ./ 
+     - name: Generate deployment package
+       if: ${{ steps.branch_check.outputs.env_name }} == "prod" || ${{ steps.branch_check.outputs.env_name }} == "develop" || ${{ steps.branch_check.outputs.env_name }} == "qa"
+       run: |
+         #zip -r deploy-${{ github.sha }}.zip ./ 
     ## Push s3 environment   
      - name: Push to s3
        if: ${{ steps.branch_check.outputs.env_name }} == "prod" || ${{ steps.branch_check.outputs.env_name }} == "develop" || ${{ steps.branch_check.outputs.env_name }} == "qa"
        run: |
-         echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}"
+        #aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}
          echo ${{ steps.branch_check.outputs.env_account }} | sed 's/./& /g'
          echo ${{ secrets.AWS_BUCKET_NAME }} | sed 's/./& /g'
 
      - name: Create new ElasticBeanstalk Application Version
        if: ${{ steps.branch_check.outputs.env_name }} == "prod" || ${{ steps.branch_check.outputs.env_name }} == "develop" || ${{ steps.branch_check.outputs.env_name }} == "qa"
        run: |
-         echo "aws elasticbeanstalk create-application-version --application-name campus-web-${{ steps.branch_check.outputs.env_name }} --source-bundle S3Bucket=${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }},S3Key=deploy-${{ github.sha }}.zip --version-label v-${{ github.sha }} --description testv1 --profile ${{ steps.branch_check.outputs.env_name }} --region ${{env.AWS_DEFAULT_REGION}}"
+         #aws elasticbeanstalk create-application-version --application-name campus-web-${{ steps.branch_check.outputs.env_name }} --source-bundle S3Bucket=${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }},S3Key=deploy-${{ github.sha }}.zip --version-label v-${{ github.sha }} --description testv1 --profile ${{ steps.branch_check.outputs.env_name }} --region ${{env.AWS_DEFAULT_REGION}}
          echo ${{ steps.branch_check.outputs.env_account }} | sed 's/./& /g'
          echo ${{ secrets.AWS_BUCKET_NAME }} | sed 's/./& /g'
      - name: Deploy new App Version
        if: ${{ steps.branch_check.outputs.env_name }} == "prod" || ${{ steps.branch_check.outputs.env_name }} == "develop" || ${{ steps.branch_check.outputs.env_name }} == "qa"
        run: |
-         echo "aws elasticbeanstalk update-environment --application-name campus-web-${{ steps.branch_check.outputs.env_name }} --environment-name campus-${{ steps.branch_check.outputs.env_name }} --version-label v-${{ github.sha }} --profile ${{ steps.branch_check.outputs.env_name }} --region ${{env.AWS_DEFAULT_REGION}}"
+         #aws elasticbeanstalk update-environment --application-name campus-web-${{ steps.branch_check.outputs.env_name }} --environment-name campus-${{ steps.branch_check.outputs.env_name }} --version-label v-${{ github.sha }} --profile ${{ steps.branch_check.outputs.env_name }} --region ${{env.AWS_DEFAULT_REGION}}
          echo ${{ steps.branch_check.outputs.env_account }} | sed 's/./& /g'
          echo ${{ secrets.AWS_BUCKET_NAME }} | sed 's/./& /g'
