@@ -33,12 +33,8 @@ jobs:
     ## Crear el ZIP file
      - name: Push to s3
        run: |
-         if [ "${{ steps.branch_check.outputs.env_name }}" == "prod" ]; then
+         if [ "${{ steps.branch_check.outputs.env_name }}" == "prod" || "${{ steps.branch_check.outputs.env_name }}" == "develop" || "${{ steps.branch_check.outputs.env_name }}" == "qa" ]; then
            echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}"
-         elif [ "${{ steps.branch_check.outputs.env_name }}" == "develop" ]; then
-           echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}"
-         else
-           echo "aws s3 cp deploy-${{ github.sha }}.zip s3://${{ secrets.AWS_BUCKET_NAME }}-${{env.AWS_DEFAULT_REGION}}-${{ steps.branch_check.outputs.env_account }}/ --profile ${{ steps.branch_check.outputs.env_name }}" 
          fi
      #run: tar czf deploy.tar.gz * --exclude=./deploy.tar.gz
 
