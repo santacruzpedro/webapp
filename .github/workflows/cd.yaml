@@ -11,7 +11,7 @@ on:
 jobs:
  deployments:
    runs-on: ubuntu-latest
-   environment: develop
+   environment: ${{ needs.build.outputs.env_name }}
    steps:
      - name: Checkout source php code
        uses: actions/checkout@v2
@@ -28,8 +28,8 @@ jobs:
          fi      
 
     ## Crear el ZIP file
-     - name: Generate deployment package
-       run: echo ${{ secrets.AWS_ACCOUNT }}
+     - name: Use variable setup in previous step
+        run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
      #run: tar czf deploy.tar.gz * --exclude=./deploy.tar.gz
 
    #- name: push to S3
